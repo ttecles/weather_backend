@@ -1,0 +1,47 @@
+version: '3'
+services:
+  db:
+    image: mysql/mysql-server
+    container_name: db
+    env_file: .env-mysql
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - db-data:/data/db
+  flask:
+    build: .
+    container_name: flask
+    ports:
+      - "8000:5000"
+    env_file: .env
+    restart: always
+    networks:
+      - frontend
+      - backend
+  webserver:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    container_name: webserver
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_ENV: "prod"
+      APP_NAME: "webserver"
+      APP_DEBUG: "false"
+      SERVICE_NAME: "webserver"
+    depends_on:
+      - flask
+    networks:
+      - frontend
+volumes:
+  db-data:
+    driver: local
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

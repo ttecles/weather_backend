@@ -1,0 +1,6 @@
+-r common.txt
+gunicorn
+mysqlclient
+mysql-connector-python
+pymysql
+cryptography
