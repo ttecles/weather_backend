@@ -40,8 +40,8 @@ Once done, run docker
 docker-compose up -d --build
 ```
 
-| Endpoing | Description | Method | 
-| --- | --- |
-| /api/v1/localities | List of all available localities | GET |
-| /api/v1/daily/locality/<locality-id> | 15-Daily Forecast on locality-id | GET |
-| /api/v1/hourly/locality/<locality-id> | 7-Day Hourly Forecast on locality-id | GET |
+Endpoint | Description | Methods
+--- | --- | --- 
+/api/v1/localities | List of all available localities | GET
+/api/v1/daily/locality/<locality-id> | 15-Daily Forecast on locality-id | GET
+/api/v1/hourly/locality/<locality-id> | 7-Day Hourly Forecast on locality-id | GET
