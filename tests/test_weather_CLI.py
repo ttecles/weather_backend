@@ -1,6 +1,7 @@
 import os
 
-import responses
+import httpx
+import respx
 
 from app.models import Hour, Day, Locality
 from app.weather.tu_tiempo_api import URL
@@ -14,10 +15,11 @@ class TestWeatherCLI(FlaskWeatherApp):
         super().setUp()
         self.runner = self.app.test_cli_runner()
 
-    @responses.activate
+    @respx.mock
     def test_forecast(self):
-        responses.add(responses.GET, url=URL, json=api_response)
-        os.environ.update({'WEATHER_API': 'TuTiempoAPI', 'WEATHER_API_KEY': 'zwDX4azaz4X4Xqs', 'WEATHER_LOCATIONS': '3768'})
+        respx.get(url=URL).mock(return_value=httpx.Response(200, json=api_response))
+        os.environ.update(
+            {'WEATHER_API': 'TuTiempoAPI', 'WEATHER_API_KEY': 'zwDX4azaz4X4Xqs', 'WEATHER_LOCATIONS': '3768'})
         result = self.runner.invoke(forecast)
 
         self.assertEqual("Forecast updated\n", result.output)

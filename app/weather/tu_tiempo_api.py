@@ -1,9 +1,9 @@
+import asyncio
 import logging
 import re
 import typing as t
-from enum import Enum
 
-import requests
+import httpx as httpx
 from marshmallow import pre_load, fields
 
 from app.models import Day, Hour, Locality
@@ -58,18 +58,25 @@ class TuTiempoAPI(WeatherAPI, DaylyHourlyForecastMixin):
         if self.language not in LANGUAGES:
             raise ValueError('invalid language')
 
+    async def get_locality_data(self, client, locality):
+        resp = await client.get(URL + f"?lan={self.language}&apid={self.api_key}&lid={locality}")
+        resp.raise_for_status()
+        return resp.json()
+
+    async def async_collect_data(self, timeout):
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            tasks = [self.get_locality_data(client, l) for l in self.l_ids]
+            return await asyncio.gather(*tasks, return_exceptions=False)
+
     def collect_data(self, timeout=None) -> t.Optional[t.Dict[Locality, t.Dict[str, t.List[t.Union[Hour, Day]]]]]:
         fetched = []
-        for l_id in self.l_ids:
-            try:
-                resp = requests.get(
-                    URL + f"?lan={self.language}&apid={self.api_key}&lid={l_id}",
-                    timeout=timeout)
-                resp.raise_for_status()
-            except Exception as e:
-                logging.exception("Error collecting weather data")
-                continue
-            data = resp.json()
+
+        try:
+            responses = asyncio.run(self.async_collect_data(timeout))
+        except:
+            logging.exception("Error while fetching data")
+            return {}
+        for l_id, data in zip(self.l_ids, responses):
             locality = {'id': l_id, 'name': data.get('locality').get('name'),
                         'country': data.get('locality').get('country')}
 

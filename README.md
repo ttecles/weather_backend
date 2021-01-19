@@ -15,7 +15,7 @@ It is very important that this project should have unit tests. You have total fr
 * Project runs on Docker
 * Python 3 and unit tests is a must
 
-# Preparing environment files
+# Run Backend API
 Set .env file:
 
 ```dotenv
@@ -23,7 +23,7 @@ FLASK_APP=weather.py
 FLASK_CONFIG=docker
 SECRET_KEY=5a8as84c6a5s84as6sd8a3c2a
 WEATHER_API_KEY=zwDX4azaz4X4Xqs
-WEATHER_LOCATIONS=3200,3201,3202,3203,3204,3205,3206,3207,3208
+WEATHER_LOCATIONS=3200,3201,3202,3203,3204,3205,3206,3207,3208 # specify as wanted
 DATABASE_URL=mysql+pymysql://weather:onemind@db/weather
 ```
 
@@ -36,9 +36,12 @@ MYSQL_PASSWORD=<database-password>
 ```
 
 Once done, run docker
+
 ```shell
 docker-compose up -d --build
 ```
+
+Available endpoints:
 
 Endpoint | Description | Methods
 --- | --- | --- 

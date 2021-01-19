@@ -3,4 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 marshmallow
 python-dotenv
-requests
+httpx
