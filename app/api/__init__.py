@@ -11,6 +11,6 @@ from . import day, hour
 locality_list_view = LocalityList.as_view('locality_list')
 api.add_url_rule('/localities', view_func=locality_list_view, methods=['GET'])
 day_list_view = DayList.as_view('daily_locality')
-api.add_url_rule('/days/locality/<int:locality_id>', view_func=day_list_view, methods=['GET'])
+api.add_url_rule('/daily/locality/<int:locality_id>', view_func=day_list_view, methods=['GET'])
 hour_list_view = HourList.as_view('hourly_locality')
-api.add_url_rule('/hours/locality/<int:locality_id>', view_func=hour_list_view, methods=['GET'])
+api.add_url_rule('/hourly/locality/<int:locality_id>', view_func=hour_list_view, methods=['GET'])

@@ -82,7 +82,7 @@ class TuTiempoAPI(WeatherAPI, DaylyHourlyForecastMixin):
 
             days = [v for k, v in data.items() if k.startswith('day')]
             hours = [v for k, v in data['hour_hour'].items()]
-            locality.update(dayly_forecast=days)
+            locality.update(daily_forecast=days)
             locality.update(hourly_forecast=hours)
             fetched.append(locality)
         return self.load_data(fetched)

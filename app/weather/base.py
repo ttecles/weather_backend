@@ -51,7 +51,7 @@ class DaylyHourlyForecastMixin:
 
         forecast = {}
         for l in json_forecast:
-            days = l.pop('dayly_forecast')
+            days = l.pop('daily_forecast')
             hours = l.pop('hourly_forecast')
             locality = self.locality_schema.load(l)
             daily_forecast = []
