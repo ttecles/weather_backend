@@ -7,8 +7,6 @@ services:
     restart: always
     networks:
       - backend
-    volumes:
-      - db-data:/data/db
   flask:
     build: .
     container_name: flask
@@ -37,9 +35,6 @@ services:
       - flask
     networks:
       - frontend
-volumes:
-  db-data:
-    driver: local
 networks:
   frontend:
     driver: bridge

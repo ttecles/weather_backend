@@ -1,17 +1,19 @@
 import copy
+from enum import Enum
 from unittest import TestCase
 
 import responses
 
 from app.weather import TuTiempoAPI
 from app.weather.tu_tiempo_api import URL
-from tests.base import api_response, day_s, hour_s
+from tests.base import api_response, day_s, hour_s, locality_s
+
 
 
 class TestTuTiempoAPI(TestCase):
 
     def setUp(self) -> None:
-        self.api = TuTiempoAPI("api_key", geolocation=(1.0, 1.0))
+        self.api = TuTiempoAPI("api_key", locations=[1])
 
     @responses.activate
     def test_collect_data(self):
@@ -19,9 +21,16 @@ class TestTuTiempoAPI(TestCase):
 
         data = self.api.collect_data()
         self.assertEqual(1, len(responses.calls))
-        self.assertEqual(f'{URL}?lan=es&apid=api_key&ll=1.0,1.0',
+        self.assertEqual(f'{URL}?lan=es&apid=api_key&lid=1',
                          responses.calls[0].request.url)
 
+        self.assertEqual(1, len(data))
+        locality = list(data.keys())[0]
+        self.assertEqual(1, locality.id)
+        self.assertEqual('Madrid', locality.name)
+        self.assertEqual('España', locality.country)
+
+        self.assertEqual(1, len(data[locality]['daily_forecast']))
         self.assertDictEqual({'date': '2021-01-16',
                               'humidity': 85,
                               'icon': '4',
@@ -35,7 +44,8 @@ class TestTuTiempoAPI(TestCase):
                               'temperature_min': -1,
                               'text': 'Parcialmente nuboso',
                               'wind': 4,
-                              'wind_direction': 'Nordeste'}, day_s.dump(data[0][0]))
+                              'wind_direction': 'Nordeste'}, day_s.dump(data[locality]['daily_forecast'][0]))
+        self.assertEqual(1, len(data[locality]['hourly_forecast']))
         self.assertDictEqual({'date': '2021-01-16',
                               'hour_data': '20:00',
                               'humidity': 82,
@@ -45,7 +55,7 @@ class TestTuTiempoAPI(TestCase):
                               'temperature': 4,
                               'text': 'Despejado',
                               'wind': 2,
-                              'wind_direction': 'Sureste'}, hour_s.dump(data[1][0]))
+                              'wind_direction': 'Sureste'}, hour_s.dump(data[locality]['hourly_forecast'][0]))
 
     @responses.activate
     def test_collect_data_with_special_values(self):
@@ -70,7 +80,7 @@ class TestTuTiempoAPI(TestCase):
                               'temperature_min': -1,
                               'text': 'Parcialmente nuboso',
                               'wind': 4,
-                              'wind_direction': 'Nordeste'}, day_s.dump(data[0][0]))
+                              'wind_direction': 'Nordeste'}, day_s.dump(data[list(data.keys())[0]]['daily_forecast'][0]))
 
     @responses.activate
     def test_collect_data_404_error(self):
@@ -78,7 +88,7 @@ class TestTuTiempoAPI(TestCase):
 
         data = self.api.collect_data()
 
-        self.assertIsNone(data)
+        self.assertDictEqual({}, data)
 
     @responses.activate
     def test_collect_data_connection_error(self):
@@ -86,7 +96,7 @@ class TestTuTiempoAPI(TestCase):
 
         data = self.api.collect_data()
 
-        self.assertIsNone(data)
+        self.assertDictEqual({}, data)
 
     @responses.activate
     def test_collect_data_404_error(self):
@@ -94,4 +104,4 @@ class TestTuTiempoAPI(TestCase):
 
         data = self.api.collect_data()
 
-        self.assertIsNone(data)
+        self.assertDictEqual({}, data)

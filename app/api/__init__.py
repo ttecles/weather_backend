@@ -7,7 +7,7 @@ api = Blueprint('api', __name__)
 
 from . import day, hour
 
-day_view = DayList.as_view('daylist')
-api.add_url_rule('/days/', view_func=day_view, methods=['GET'])
-hour_view = HourList.as_view('hourlist')
-api.add_url_rule('/hours/', view_func=hour_view, methods=['GET'])
+day_view = DayList.as_view('daily_locality')
+api.add_url_rule('/days/locality/<int:locality_id>', view_func=day_view, methods=['GET'])
+hour_view = HourList.as_view('hourly_locality')
+api.add_url_rule('/hours/locality/<int:locality_id>', view_func=hour_view, methods=['GET'])

@@ -1,5 +1,9 @@
 from marshmallow import fields, Schema
 
+class LocalitySchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    country = fields.String(allow_none=True)
 
 class DaySchema(Schema):
     """default Day Schema"""

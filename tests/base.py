@@ -1,8 +1,10 @@
 import datetime as dt
 from unittest import TestCase
 
-from app import create_app, db
-from app.schema import DaySchema, HourSchema
+import flask
+
+from app import create_app, db, errors
+from app.schema import DaySchema, HourSchema, LocalitySchema
 
 day = dict(date=dt.date(2021, 1, 16), temperature_max=8, temperature_min=-1, icon="4", text="Parcialmente nuboso",
            humidity=85, wind=4, wind_direction="Nordeste", icon_wind="NE", sunrise=dt.time(8, 30),
@@ -13,10 +15,23 @@ hour = dict(date=dt.date(2021, 1, 16), hour_data=dt.time(20, 0), temperature=4, 
 
 day_s = DaySchema()
 hour_s = HourSchema()
+locality_s = LocalitySchema()
 
-api_response = {"day1": day_s.dump(day),
-                "hour_hour": {"hour1": hour_s.dump(hour)},
-                }
+api_response = {
+    "locality":
+        {
+            "name": "Madrid",
+            "country": "España",
+        }, "day1": day_s.dump(day),
+    "hour_hour": {"hour1": hour_s.dump(hour)},
+}
+
+
+class ValidateResponseMixin:
+    def validate_error_response(self, resp: flask.Response, error: errors.BaseError):
+        if hasattr(self, 'assertEqual') and hasattr(self, 'assertDictEqual'):
+            self.assertEqual(error.status_code, resp.status_code)
+            self.assertDictEqual(errors.format_error_content(error), resp.get_json())
 
 
 class FlaskWeatherApp(TestCase):
