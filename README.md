@@ -14,3 +14,34 @@ It is very important that this project should have unit tests. You have total fr
 * API Rest that shows the data saved on the DB, filtered by city
 * Project runs on Docker
 * Python 3 and unit tests is a must
+
+# Preparing environment files
+Set .env file:
+
+```dotenv
+FLASK_APP=weather.py
+FLASK_CONFIG=docker
+SECRET_KEY=5a8as84c6a5s84as6sd8a3c2a
+WEATHER_API_KEY=zwDX4azaz4X4Xqs
+WEATHER_LOCATIONS=3200,3201,3202,3203,3204,3205,3206,3207,3208
+DATABASE_URL=mysql+pymysql://weather:onemind@db/weather
+```
+
+Set .env-mysql 
+```dotenv
+MYSQL_RANDOM_ROOT_PASSWORD=yes
+MYSQL_DATABASE=weather
+MYSQL_USER=weather
+MYSQL_PASSWORD=<database-password>
+```
+
+Once done, run docker
+```shell
+docker-compose up -d --build
+```
+
+| Endpoing | Description | Method | 
+| --- | --- |
+| /api/v1/localities | List of all available localities | GET |
+| /api/v1/daily/locality/<locality-id> | 15-Daily Forecast on locality-id | GET |
+| /api/v1/hourly/locality/<locality-id> | 7-Day Hourly Forecast on locality-id | GET |
