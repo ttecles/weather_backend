@@ -10,4 +10,5 @@ class DayList(MethodView):
 
     def get(self, locality_id):
         l = Locality.query.get_or_raise(locality_id)
-        return jsonify([self.schema.dump(d) for d in Day.query.filter_by(locality_id=locality_id).order_by(Day.date).all()])
+        return jsonify(
+            [self.schema.dump(d) for d in Day.query.filter_by(locality_id=locality_id).order_by(Day.date).all()])

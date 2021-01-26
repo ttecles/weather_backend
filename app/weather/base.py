@@ -36,7 +36,7 @@ class WeatherAPI(abc.ABC):
         pass
 
 
-class DaylyHourlyForecastMixin:
+class DailyHourlyForecastMixin:
     day_schema: t.ClassVar[BaseDaySchema]
     hour_schema: t.ClassVar[BaseHourSchema]
     locality_schema: t.ClassVar[BaseLocalitySchema]

@@ -8,7 +8,7 @@ from marshmallow import pre_load, fields
 
 from app.models import Day, Hour, Locality
 from app.schema import DaySchema as RestDaySchema, HourSchema as RestHourSchema, LocalitySchema as RestLocalitySchema
-from app.weather.base import BaseDaySchema, BaseHourSchema, WeatherAPI, BaseLocalitySchema, DaylyHourlyForecastMixin
+from app.weather.base import BaseDaySchema, BaseHourSchema, WeatherAPI, BaseLocalitySchema, DailyHourlyForecastMixin
 
 # defaults
 URL = 'https://api.tutiempo.net/json/'
@@ -39,7 +39,7 @@ class HourSchema(BaseHourSchema, RestHourSchema):
     locality_id = fields.Integer()
 
 
-class TuTiempoAPI(WeatherAPI, DaylyHourlyForecastMixin):
+class TuTiempoAPI(WeatherAPI, DailyHourlyForecastMixin):
     TIMEOUT = 30
     day_schema = DaySchema()
     hour_schema = HourSchema()
